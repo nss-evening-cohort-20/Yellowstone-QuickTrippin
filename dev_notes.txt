@@ -1,0 +1,46 @@
+Employee:
+	public string Name
+	public string Role
+	public decimal Sales
+	public int Store
+	
+Store:
+	int Store number
+	decimal Gas Yearly
+	decimal Gas Current quarter
+	decimal Retail Yearly
+	decimal Retail Current quarter
+
+District:
+	public list Store
+	public string DistrictManager
+	public string DistrictName
+	
+Repository:
+	static list of districts
+	static list of stores
+
+QuikTrip Management Systems
+
+1. Enter District Sales (Demin)
+	- User input
+2. Generate District Report
+	- Printing out the data
+3. Add New Employee 
+	- User input 
+4. Add a Store/District
+	- User input
+5. Exit
+
+
+
+
+
+
+
+	
+	
+
+
+
+
