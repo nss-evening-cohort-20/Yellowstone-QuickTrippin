@@ -10,7 +10,7 @@ public class Store
 {
     public int StoreNumber { get; set; }
     public decimal GasCurrentQuarter { get; set; }
-    public decimal RetailYearly { get; set}
-    public decimal RetailCurrentQuarter { get; set}
+    public decimal RetailYearly { get; set; }
+    public decimal RetailCurrentQuarter { get; set; }
 
 }
