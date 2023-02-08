@@ -8,5 +8,5 @@ namespace Yellowstone_QuickTrippin;
 
 public class District
 {
-
+    
 }

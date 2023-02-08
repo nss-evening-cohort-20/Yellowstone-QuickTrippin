@@ -9,8 +9,18 @@ namespace Yellowstone_QuickTrippin;
 public class Store
 {
     public int StoreNumber { get; set; }
-    public decimal GasCurrentQuarter { get; set; }
-    public decimal RetailYearly { get; set; }
-    public decimal RetailCurrentQuarter { get; set; }
+    public double GasYearly { get; set; }
+    public double GasCurrentQuarter { get; set; }
+    public double RetailYearly { get; set; }
+    public double RetailCurrentQuarter { get; set; }
+
+    public Store(int storeNumber, double gasYearly, double gasCurrentQuarter, double retailYearly, double retailCurrentQuarter)
+    {
+        StoreNumber = storeNumber;
+        GasYearly = gasYearly;
+        GasCurrentQuarter = gasCurrentQuarter;
+        RetailYearly = retailYearly;
+        RetailCurrentQuarter = retailCurrentQuarter;
+    }
 
 }
