@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yellowstone_QuickTrippin;
+namespace Yellowstone_QuickTrippin.Repositories;
 
 public class DistrictRepository
 {

@@ -9,7 +9,7 @@ QTApp app = new QTApp();
 app.Run();
 
 
-switch (app.InitialSelection)
+switch ();
 {
     case "1":
         // store sales
