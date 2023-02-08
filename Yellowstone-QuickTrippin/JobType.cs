@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Yellowstone_QuickTrippin
 {
-           public enum JobType
-        {
-            StoreManager,
-            AssistantManager,
-            Associate,
-            DistrictManager
-        }
+    public enum JobType
+    {
+        StoreManager,
+        AssistantManager,
+        Associate,
+        DistrictManager
     }
+}
 

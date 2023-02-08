@@ -23,15 +23,3 @@ public class DistrictRepository
         _districts.Add(district);
     }
 }
-
-class StoreRepository
-{
-
-    static List<Store> _stores = new List<Store>();
-
-    public List<Store> GetStores()
-
-    {
-        return _stores;
-    }
-}
