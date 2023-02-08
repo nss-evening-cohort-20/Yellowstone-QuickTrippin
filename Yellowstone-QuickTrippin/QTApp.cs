@@ -10,10 +10,12 @@ namespace Yellowstone_QuickTrippin;
 
 public class QTApp
 {
+    private StoreRepository _storeRepo = new StoreRepository();
     public void Run()
     {
         Console.WriteLine("QuickTrip Management Systems");
         Console.WriteLine(OptionsText());
+        Console.WriteLine(_storeRepo.GetStores()[0].StoreNumber);
         Console.ReadLine();
     }
 
