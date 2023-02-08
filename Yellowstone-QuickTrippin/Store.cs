@@ -11,10 +11,14 @@ public class Store
     public int StoreNumber { get; set; }
 
     // These options are not needed for the store object
+
+    // -------------------------------
     public double? GasYearly { get; set; }
     public double? GasCurrentQuarter { get; set; }
     public double? RetailYearly { get; set; }
     public double? RetailCurrentQuarter { get; set; }
+
+    // -------------------------------
 
     public Store(int storeNumber, double gasYearly, double gasCurrentQuarter, double retailYearly, double retailCurrentQuarter)
     {
