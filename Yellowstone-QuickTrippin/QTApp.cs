@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using Yellowstone_QuickTrippin.Repositories;
 
 namespace Yellowstone_QuickTrippin;
@@ -16,7 +11,7 @@ public class QTApp
 
     {
         var Choice = 0;
-        
+
         Console.WriteLine("QuickTrip Management Systems");
         Console.WriteLine(OptionsText());
         //Console.WriteLine(_storeRepo.GetStores()[0].StoreNumber);
@@ -95,7 +90,7 @@ public class QTApp
         Console.WriteLine("Enter Store Number");
         Console.Write("#");
         int StoreNumber = Convert.ToInt32(Console.ReadLine());
-        
+
         //See if store number exists in the _storeRepo
         bool doesExist = (stores.Where(s => s.StoreNumber == StoreNumber)).ToList().Count > 0;
 
