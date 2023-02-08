@@ -16,4 +16,5 @@ namespace Yellowstone_QuickTrippin
         AddStoreOrDistrict = 4,
         Exit = 5,
     }
+        
 }
