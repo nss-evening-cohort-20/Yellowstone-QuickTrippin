@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using Yellowstone_QuickTrippin;
 
 namespace Yellowstone_QuickTrippin
 {
@@ -17,3 +18,4 @@ namespace Yellowstone_QuickTrippin
         Exit = 5,
     }
 }
+
