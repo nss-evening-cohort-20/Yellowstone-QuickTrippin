@@ -2,6 +2,7 @@
 
 namespace Yellowstone_QuickTrippin
 {
+    [DataContract]
     public enum MenuOption
     {
         None = 0,
