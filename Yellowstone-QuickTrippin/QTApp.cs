@@ -11,32 +11,86 @@ namespace Yellowstone_QuickTrippin;
 public class QTApp
 {
     private StoreRepository _storeRepo = new StoreRepository();
+
+    private bool working;
     public void Run()
     {
-        var Choice = 0;
-        
-        Console.WriteLine("QuickTrip Management Systems");
-        Console.WriteLine(OptionsText());
-        //Console.WriteLine(_storeRepo.GetStores()[0].StoreNumber);
-        Choice = Convert.ToInt16(Console.ReadLine());
+        //var Choice = 0;
+
+        //Console.WriteLine("QuickTrip Management Systems");
+        //Console.WriteLine(OptionsText());
+        ////Console.WriteLine(_storeRepo.GetStores()[0].StoreNumber);
+        //Choice = Convert.ToInt16(Console.ReadLine());
 
 
-        switch (Choice)
+        //switch (Choice)
+        //{
+        //    case (int)MenuOption.EnterDistrictSales:
+        //        EnterDistrictSale();
+        //        break;
+        //    case (int)MenuOption.GenerateDistricReport:
+        //        break;
+        //    case (int)MenuOption.AddNewEmployee:
+        //        AddNewEmployee();
+        //        break;
+        //    case (int)MenuOption.AddStoreOrDistrict:
+        //        AddStoreOrDistrict();
+        //        break;
+        //    case (int)MenuOption.Exit:
+        //        break;
+        //}
+
+        working = true;
+
+        while (working)
         {
-            case (int)MenuOption.EnterDistrictSales:
-                EnterDistrictSale();
-                break;
-            case (int)MenuOption.GenerateDistricReport:
-                break;
-            case (int)MenuOption.AddNewEmployee:
-                AddNewEmployee();
-                break;
-            case (int)MenuOption.AddStoreOrDistrict:
-                break;
-            case (int)MenuOption.Exit:
-                break;
+            GetCurrentChoice();
         }
 
+    }
+
+    private void GetCurrentChoice()
+    {
+            Console.WriteLine("QuickTrip Management Systems");
+            Console.WriteLine(OptionsText());
+        string input = Console.ReadLine();
+
+        int choice;
+
+        if (!int.TryParse(input, out choice))
+        {
+            Console.WriteLine("Please enter a number");
+            input = Console.ReadLine();
+        }
+        else
+        {
+            choice = Convert.ToInt32(input);
+        }
+
+
+        switch (choice)
+            {
+                case (int)MenuOption.EnterDistrictSales:
+                    Console.Clear();
+                    EnterDistrictSale();
+                    Console.Clear();
+                    break;
+                case (int)MenuOption.GenerateDistricReport:
+                    break;
+                case (int)MenuOption.AddNewEmployee:
+                    Console.Clear();
+                    AddNewEmployee();
+                    Console.Clear();
+                    break;
+                case (int)MenuOption.AddStoreOrDistrict:
+                    Console.Clear();
+                    AddStoreOrDistrict();
+                    Console.Clear();
+                    break;
+                case (int)MenuOption.Exit:
+                    working = false;
+                    break;
+            }
     }
 
     public void AddNewEmployee()
@@ -138,6 +192,50 @@ public class QTApp
         .GetCustomAttributes(typeof(EnumMemberAttribute), false)
         .SingleOrDefault() as EnumMemberAttribute;
         return attribute == null ? value.ToString() : attribute.Value;
+    }
+
+    public void AddStoreOrDistrict()
+    {
+        Console.WriteLine("Choose an option below:");
+        Console.WriteLine("1. Create New Store");
+        Console.WriteLine("2. Create New District");
+        switch (Console.ReadLine())
+        {
+            case "1":
+                AddStore();
+                break;
+            default:
+                Console.WriteLine("That is not a valid answer!");
+                break;
+        }
+    }
+
+    public void AddStore()
+    {
+        Console.Write("Enter New Store Number: ");
+
+        string storeNumberInput = Console.ReadLine();
+
+        int storeNumber;
+
+        if (!int.TryParse(storeNumberInput, out storeNumber))
+        {
+            Console.WriteLine("Please enter a number");
+            Console.Write("Store Number: ");
+            storeNumberInput = Console.ReadLine(); 
+        }
+        else
+        {
+            storeNumber = Convert.ToInt32(storeNumberInput);
+        }
+
+        Store newStore = new Store(storeNumber);
+
+        StoreRepository.AddStore(newStore);
+
+        Console.WriteLine($"Store #{storeNumber} has been added to the list!");
+        Console.ReadKey();
+
     }
 
 }

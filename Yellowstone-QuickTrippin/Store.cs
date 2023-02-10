@@ -20,13 +20,13 @@ public class Store
 
     // -------------------------------
 
-    public Store(int storeNumber, double gasYearly, double gasCurrentQuarter, double retailYearly, double retailCurrentQuarter)
+    public Store(int storeNumber)
     {
         StoreNumber = storeNumber;
-        GasYearly = gasYearly;
-        GasCurrentQuarter = gasCurrentQuarter;
-        RetailYearly = retailYearly;
-        RetailCurrentQuarter = retailCurrentQuarter;
+        //GasYearly = gasYearly;
+        //GasCurrentQuarter = gasCurrentQuarter;
+        //RetailYearly = retailYearly;
+        //RetailCurrentQuarter = retailCurrentQuarter;
     }
 
 }
