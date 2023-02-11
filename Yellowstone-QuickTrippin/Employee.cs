@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Yellowstone_QuickTrippin;
 
-public class Employees
+public class Employee
 {
     public string Name { get; set; }
     public string Role { get; set; }
@@ -18,7 +18,7 @@ public class Employees
     public decimal Sales { get; set; }
 
 
-    public Employees(string name, string role, int storeNumber, decimal sales, string jobTitle)
+    public Employee(string name, string role, int storeNumber, decimal sales, string jobTitle)
     {
         Name = name;
         StoreNumber = storeNumber;
