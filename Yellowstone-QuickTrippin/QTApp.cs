@@ -37,6 +37,7 @@ public class QTApp
             new SelectionPrompt<string>()
                 .Title("QT Actions - use up/down arrows + enter to make a selection")
                 .PageSize(10)
+                .HighlightStyle("Red")
                 .AddChoices(new[] {
                 "Enter District Sales",
                 "Generate District Report",
@@ -254,8 +255,6 @@ public class QTApp
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
-        //prompt user to select district
-
         var prompt = new TextPrompt<int>("Please specify the relevant district for this store");
 
         foreach (var district in _districtRepository.GetDistricts())
@@ -264,8 +263,6 @@ public class QTApp
         }
 
         var selectedDistrict = AnsiConsole.Prompt(prompt);
-
-        //create new store
 
         Store newStore = new Store(storeNumber, selectedDistrict);
 
@@ -285,12 +282,35 @@ public class QTApp
         }
         Console.WriteLine();
         Console.Write("Enter New District Number: ");
-        Console.ReadLine();
-        //Console.WriteLine("Press any key to return home");
-        //Console.ReadKey();
+        string districtInput = Console.ReadLine();
+
+        int districtNumber;
+
+        if (!int.TryParse(districtInput, out districtNumber))
+        {
+            Console.WriteLine("Please enter a number");
+            Console.Write("District Number: ");
+            districtInput = Console.ReadLine();
+        }
+        else
+        {
+            districtNumber = Convert.ToInt32(districtInput);
+        }
+
+        Console.Write("Enter New District Name: ");
+
+        string districtName = Console.ReadLine();
+        List<Store> stores = new List<Store>();
+        District newDistrict = new District(districtNumber, districtName, stores);
+        DistrictRepository.SaveNewDistrict(newDistrict);
+        Console.Clear();
+        Console.WriteLine($"{districtName} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
+        Console.ReadKey();
     }
     public void GetDistrictReport()
     {
+        //display list of districts and allow user to select district to print report
 
         foreach (var store in _storeRepo.GetStores())
         {

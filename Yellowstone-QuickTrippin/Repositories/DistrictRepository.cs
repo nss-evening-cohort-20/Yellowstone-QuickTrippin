@@ -22,7 +22,7 @@ public class DistrictRepository
         return _districts;
     }
 
-    public void SaveNewDistrict(District district)
+    public static void SaveNewDistrict(District district)
     {
         _districts.Add(district);
     }
