@@ -9,14 +9,14 @@ namespace Yellowstone_QuickTrippin.Repositories
 {
     public class EmployeeRepository
     {
-        static List<Employees> _employee = new List<Employees>();
+        static List<Employee> _employee = new List<Employee>();
 
-        public List<Employees> GetEmployees()
+        public List<Employee> GetEmployees()
         {
             return _employee;
         }
 
-        public void AddEmployee(Employees NewEmployee)
+        public void AddEmployee(Employee NewEmployee)
         {
             _employee.Add(NewEmployee);
         }

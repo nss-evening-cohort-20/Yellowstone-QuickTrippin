@@ -81,12 +81,21 @@ public class QTApp
 
             }
            
+
+            int i = 0;
+            int currentSelection;
+            
+            
                 Console.WriteLine($"\n\x1B[4m What is {name}'s store number?\x1B[0m ");
-                Console.WriteLine("1. #518");
-                Console.WriteLine("2. #571");
+            foreach (var store in _storeRepo.GetStores())
+            {
+                i += 1;
+                Console.WriteLine($"{i}. #{store.StoreNumber} ");
+                currentSelection = i;
+            }
+              
                 var StoreInput = Console.ReadLine();
-                    startLoop = false;
-           
+            startLoop = false;
         }
     }
 
