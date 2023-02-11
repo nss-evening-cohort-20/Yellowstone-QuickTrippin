@@ -2,6 +2,7 @@
 using System.Text;
 using Yellowstone_QuickTrippin.Repositories;
 
+
 namespace Yellowstone_QuickTrippin;
 
 public class QTApp
@@ -56,30 +57,37 @@ public class QTApp
                 case "1":
                     role = JobType.DistrictManager.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
                     break;
                 case "2":
                     role = JobType.StoreManager.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
+                    
                     break;
                 case "3":
                     role = JobType.AssistantManager.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
+                    
                     break;
                 case "4":
                     role = JobType.Associate.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
+                    
                     break;
                 default:
                     Console.WriteLine("That is not a valid answer!");
                     break;
 
             }
+           
+                Console.WriteLine($"\n\x1B[4m What is {name}'s store number?\x1B[0m ");
+                Console.WriteLine("1. #518");
+                Console.WriteLine("2. #571");
+                var StoreInput = Console.ReadLine();
+                    startLoop = false;
+           
         }
     }
+
 
     public void EnterDistrictSale()
     {
