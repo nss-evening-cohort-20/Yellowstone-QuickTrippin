@@ -27,22 +27,4 @@ public class DistrictRepository : StoreRepository
         _districts.Add(district);
     }
 
-    public void GetDistrictReport()
-    {
-        var disctricts = GetDistricts();
-
-        var stores = GetStores();
-
-        foreach (var store in stores)
-        {
-            foreach (var district in disctricts)
-            {
-                if (store.DistrictNumber == district.DistrictNumber)
-                {
-                    Console.WriteLine($"{district.DistrictName}: {store.GasYearly}");
-                    district.StoreList.Add(store);
-                }
-            }
-        }
-    }
 }
