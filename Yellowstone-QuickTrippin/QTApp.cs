@@ -1,4 +1,9 @@
-﻿using System.Runtime.Serialization;
+﻿using Spectre.Console;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using Yellowstone_QuickTrippin.Repositories;
 
@@ -7,36 +12,102 @@ namespace Yellowstone_QuickTrippin;
 
 public class QTApp
 {
+
     private StoreRepository _storeRepo = new StoreRepository();
-    private DistrictRepository _districtRepository= new DistrictRepository();
-    public void Run()
+    private DistrictRepository _districtRepository = new DistrictRepository();
+
+    private bool working;
+public void Run()
 
     {
-        var Choice = 0;
+        working = true;
 
-        Console.WriteLine("QuickTrip Management Systems");
-        Console.WriteLine(OptionsText());
-        //Console.WriteLine(_storeRepo.GetStores()[0].StoreNumber);
-        Choice = Convert.ToInt16(Console.ReadLine());
-
-
-        switch (Choice)
+        while (working)
         {
-            case (int)MenuOption.EnterDistrictSales:
-                EnterDistrictSale();
-                break;
-            case (int)MenuOption.GenerateDistricReport:
-                GetDistrictReport();
-                break;
-            case (int)MenuOption.AddNewEmployee:
-                AddNewEmployee();
-                break;
-            case (int)MenuOption.AddStoreOrDistrict:
-                break;
-            case (int)MenuOption.Exit:
-                break;
+            Console.Title = "QT-Home";
+
+            AnsiConsole.Write(
+                new FigletText("QT-App")
+                .LeftJustified()
+                .Color(Color.Red));
+
+            var selection = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("QT Actions - use up/down arrows + enter to make a selection")
+                .PageSize(10)
+                .AddChoices(new[] {
+                "Enter District Sales",
+                "Generate District Report",
+                "Add New Employee",
+                "Add Store/District",
+                "Exit"
+            }));
+
+            switch (selection)
+            {
+                case "Enter District Sales":
+                    Console.Clear();
+                    EnterDistrictSale();
+                    Console.Clear();
+                    break;
+                case "Generate District Report":
+                    Console.Clear();
+                    GetDistrictReport();
+                    Console.Clear();
+                    break;
+                case "Add New Employee":
+                    Console.Clear();
+                    AddNewEmployee();
+                    Console.Clear();
+                    break;
+                case "Add Store/District":
+                    Console.Clear();
+                    AddStoreOrDistrict();
+                    Console.Clear();
+                    break;
+                case "Exit":
+                    Console.Clear();
+                    working = false;
+                    break;
+            }
         }
 
+    }
+
+    public void EnterDistrictSale()
+    {
+        //Get list of all stores
+        Console.Title = "Enter District Sales";
+        List<Store> stores = _storeRepo.GetStores();
+        SalesRepository SalesRepo = new SalesRepository();
+
+        Console.WriteLine("Enter Store Number");
+        Console.Write("#");
+        int StoreNumber = Convert.ToInt32(Console.ReadLine());
+
+        //See if store number exists in the _storeRepo
+        bool doesExist = (stores.Where(s => s.StoreNumber == StoreNumber)).ToList().Count > 0;
+
+        if (doesExist)
+        {
+
+            Console.WriteLine("Please enter in the store sales (Gas Yearly):");
+            double UserGasYearly = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("Please enter in the store sales (Gas Current Quarter):");
+            double UserGasCurrentQuarter = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("Please enter in the store sales ( Retail Yearly):");
+            double UserRetailYearly = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("Please enter in the store sales (Retail Current Quarter):");
+            double UserRetailCurrentQuarter = Convert.ToDouble(Console.ReadLine());
+
+
+            Sales NewSale = new Sales(StoreNumber, UserGasYearly, UserGasCurrentQuarter, UserRetailYearly, UserRetailCurrentQuarter);
+            SalesRepo.AddSales(NewSale);
+        }
+        else
+        {
+            Console.WriteLine("Store number is invalid. Please enter a valid Store Number");
+        }
     }
 
     public void AddNewEmployee()
@@ -80,61 +151,84 @@ public class QTApp
                     break;
 
             }
-           
 
-            int i = 0;
-            int currentSelection;
-            
-            
-                Console.WriteLine($"\n\x1B[4m What is {name}'s store number?\x1B[0m ");
+            //List<int> storeNums = new List<int>();
+
+            //foreach (var store in _storeRepo.GetStores())
+            //{
+            //    storeNums.Add(store.StoreNumber);
+            //}
+
+            //var str = String.Join(",", storeNums);
+            //Console.WriteLine(str);
+
+            var prompt = new TextPrompt<int>("What store are they at?");
+
             foreach (var store in _storeRepo.GetStores())
             {
-                i += 1;
-                Console.WriteLine($"{i}. #{store.StoreNumber} ");
-                currentSelection = i;
+                prompt.AddChoices(new[] { store.StoreNumber });
             }
-              
-                var StoreInput = Console.ReadLine();
-            startLoop = false;
+
+            var selectedStore = AnsiConsole.Prompt(prompt);
+            Console.WriteLine(selectedStore);
+            Console.ReadLine();
+
         }
     }
 
-
-    public void EnterDistrictSale()
+    public void AddStoreOrDistrict()
     {
-        //Get list of all stores
-        List<Store> stores = _storeRepo.GetStores();
-        SalesRepository SalesRepo = new SalesRepository();
+        var selection = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+            .Title("What would you like to do?")
+            .PageSize(10)
+            .AddChoices(new[] {
+                        "Create New Store",
+                        "Create New District",
+                        "Go home",
+        }));
 
-        Console.WriteLine("Enter Store Number");
-        Console.Write("#");
-        int StoreNumber = Convert.ToInt32(Console.ReadLine());
-
-        //See if store number exists in the _storeRepo
-        bool doesExist = (stores.Where(s => s.StoreNumber == StoreNumber)).ToList().Count > 0;
-
-        if (doesExist)
+        switch (selection)
         {
+            case "Create New Store":
+                AddStore();
+                break;
+            case "Go home":
+                Run();
+                break;
+            default:
+                Console.WriteLine("That is not a valid answer!");
+                break;
+        }
+    }
 
-            Console.WriteLine("Please enter in the store sales (Gas Yearly):");
-            double UserGasYearly = Convert.ToDouble(Console.ReadLine());
-            Console.WriteLine("Please enter in the store sales (Gas Current Quarter):");
-            double UserGasCurrentQuarter = Convert.ToDouble(Console.ReadLine());
-            Console.WriteLine("Please enter in the store sales ( Retail Yearly):");
-            double UserRetailYearly = Convert.ToDouble(Console.ReadLine());
-            Console.WriteLine("Please enter in the store sales (Retail Current Quarter):");
-            double UserRetailCurrentQuarter = Convert.ToDouble(Console.ReadLine());
+    public void AddStore()
+    {
+        Console.Write("Enter New Store Number: ");
 
+        string storeNumberInput = Console.ReadLine();
 
-            Sales NewSale = new Sales(StoreNumber, UserGasYearly, UserGasCurrentQuarter, UserRetailYearly, UserRetailCurrentQuarter);
-            SalesRepo.AddSales(NewSale);
+        int storeNumber;
+
+        if (!int.TryParse(storeNumberInput, out storeNumber))
+        {
+            Console.WriteLine("Please enter a number");
+            Console.Write("Store Number: ");
+            storeNumberInput = Console.ReadLine();
         }
         else
         {
-            Console.WriteLine("Store number is invalid. Please enter a valid Store Number");
+            storeNumber = Convert.ToInt32(storeNumberInput);
         }
-    }
 
+        Store newStore = new Store(storeNumber, 1);
+
+        StoreRepository.AddStore(newStore);
+        Console.Clear();
+        Console.WriteLine($"Store #{storeNumber} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
+        Console.ReadKey();
+    }
     public void GetDistrictReport()
     {
 
@@ -144,32 +238,13 @@ public class QTApp
             {
                 if (store.DistrictNumber == district.DistrictNumber)
                 {
-                    Console.WriteLine($"{district.DistrictName}: {store.GasYearly}");
+                    Console.WriteLine($"{district.DistrictName}: {store.StoreNumber}");
                     district.StoreList.Add(store);
                 }
             }
         }
-    }
 
-    private string OptionsText()
-    {
-        StringBuilder builder = new StringBuilder();
-
-        foreach (var option in Enum.GetValues<MenuOption>())
-        {
-            builder.AppendLine($" {(int)option}. {GetDescriptionFromEnum(option)}");
-        }
-
-        return builder.ToString();
-    }
-
-    public static string GetDescriptionFromEnum(Enum value)
-    {
-        var attribute = value.GetType()
-        .GetField(value.ToString())
-        .GetCustomAttributes(typeof(EnumMemberAttribute), false)
-        .SingleOrDefault() as EnumMemberAttribute;
-        return attribute == null ? value.ToString() : attribute.Value;
+        Console.ReadLine();
     }
 
 
