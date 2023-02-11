@@ -174,13 +174,6 @@ public void Run()
 
     public void AddStoreOrDistrict()
     {
-
-        var key = Console.ReadKey();
-        if (key.Key == ConsoleKey.Escape)
-        {
-            Run();
-        }
-
         var selection = AnsiConsole.Prompt(
         new SelectionPrompt<string>()
             .Title("What would you like to do?")
@@ -190,6 +183,7 @@ public void Run()
                         "Create New District",
                         "Go home",
         }));
+
         switch (selection)
         {
             case "Create New Store":
