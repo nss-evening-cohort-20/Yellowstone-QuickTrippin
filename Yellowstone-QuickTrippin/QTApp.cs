@@ -75,6 +75,10 @@ public class QTApp
             }
         }
 
+        AnsiConsole.Write(
+            new FigletText("Goodbye!")
+            .Centered()
+            .Color(Color.Red));
     }
 
     public void EnterDistrictSale()
