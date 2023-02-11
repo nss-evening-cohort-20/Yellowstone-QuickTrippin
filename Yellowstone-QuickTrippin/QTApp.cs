@@ -152,16 +152,6 @@ public void Run()
 
             }
 
-            //List<int> storeNums = new List<int>();
-
-            //foreach (var store in _storeRepo.GetStores())
-            //{
-            //    storeNums.Add(store.StoreNumber);
-            //}
-
-            //var str = String.Join(",", storeNums);
-            //Console.WriteLine(str);
-
             var prompt = new TextPrompt<int>("What store are they at?");
 
             foreach (var store in _storeRepo.GetStores())
@@ -193,11 +183,13 @@ public void Run()
             case "Create New Store":
                 AddStore();
                 break;
+            case "Create New District":
+                AddDistrict();
+                break;
             case "Go home":
                 Run();
                 break;
             default:
-                Console.WriteLine("That is not a valid answer!");
                 break;
         }
     }
@@ -221,13 +213,40 @@ public void Run()
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
-        Store newStore = new Store(storeNumber, 1);
+        //prompt user to select district
+
+        var prompt = new TextPrompt<int>("Please specify the relevant district for this store");
+
+        foreach (var district in _districtRepository.GetDistricts())
+        {
+            prompt.AddChoices(new[] { district.DistrictNumber });
+        }
+
+        var selectedDistrict = AnsiConsole.Prompt(prompt);
+
+        //create new store
+
+        Store newStore = new Store(storeNumber, selectedDistrict);
 
         StoreRepository.AddStore(newStore);
         Console.Clear();
-        Console.WriteLine($"Store #{storeNumber} has been added to the list!\n");
+        Console.WriteLine($"Store #{storeNumber} in district #{selectedDistrict} has been added to the list!\n");
         Console.WriteLine("Press any key to return home");
         Console.ReadKey();
+    }
+
+    public void AddDistrict()
+    {
+        Console.WriteLine("The existing districts are listed below.\n");
+        foreach (var district in _districtRepository.GetDistricts())
+        {
+            Console.WriteLine($"{district.DistrictNumber} - {district.DistrictName}");
+        }
+        Console.WriteLine();
+        Console.Write("Enter New District Number: ");
+        Console.ReadLine();
+        //Console.WriteLine("Press any key to return home");
+        //Console.ReadKey();
     }
     public void GetDistrictReport()
     {
