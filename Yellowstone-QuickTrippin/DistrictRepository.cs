@@ -40,6 +40,7 @@ public class DistrictRepository : StoreRepository
                 if (store.DistrictNumber == district.DistrictNumber)
                 {
                     Console.WriteLine($"{district.DistrictName}: {store.GasYearly}");
+                    district.StoreList.Add(store);
                 }
             }
         }
