@@ -14,6 +14,7 @@ public class QTApp
 {
 
     private StoreRepository _storeRepo = new StoreRepository();
+    private DistrictRepository _districtRepository = new DistrictRepository();
 
     private bool working;
 public void Run()
@@ -50,6 +51,8 @@ public void Run()
                     Console.Clear();
                     break;
                 case "Generate District Report":
+                    Console.Clear();
+                    GetDistrictReport();
                     Console.Clear();
                     break;
                 case "Add New Employee":
@@ -218,6 +221,14 @@ public void Run()
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
+        Store newStore = new Store(storeNumber, 1);
+
+        StoreRepository.AddStore(newStore);
+        Console.Clear();
+        Console.WriteLine($"Store #{storeNumber} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
+        Console.ReadKey();
+    }
     public void GetDistrictReport()
     {
 
@@ -227,25 +238,13 @@ public void Run()
             {
                 if (store.DistrictNumber == district.DistrictNumber)
                 {
-                    Console.WriteLine($"{district.DistrictName}: {store.GasYearly}");
+                    Console.WriteLine($"{district.DistrictName}: {store.StoreNumber}");
                     district.StoreList.Add(store);
                 }
             }
         }
-    }
 
-    private string OptionsText()
-    {
-        StringBuilder builder = new StringBuilder();
-
-        Store newStore = new Store(storeNumber);
-
-        StoreRepository.AddStore(newStore);
-        Console.Clear();
-        Console.WriteLine($"Store #{storeNumber} has been added to the list!\n");
-        Console.WriteLine("Press any key to return home");
-        Console.ReadKey();
-
+        Console.ReadLine();
     }
 
 
