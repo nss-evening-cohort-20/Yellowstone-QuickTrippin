@@ -17,16 +17,18 @@ public class Store
     public double? GasCurrentQuarter { get; set; }
     public double? RetailYearly { get; set; }
     public double? RetailCurrentQuarter { get; set; }
+    public int DistrictNumber { get; set; }
 
     // -------------------------------
 
-    public Store(int storeNumber, double gasYearly, double gasCurrentQuarter, double retailYearly, double retailCurrentQuarter)
+    public Store(int storeNumber, double gasYearly, double gasCurrentQuarter, double retailYearly, double retailCurrentQuarter, int districtNumber)
     {
         StoreNumber = storeNumber;
         GasYearly = gasYearly;
         GasCurrentQuarter = gasCurrentQuarter;
         RetailYearly = retailYearly;
         RetailCurrentQuarter = retailCurrentQuarter;
+        DistrictNumber = districtNumber;
     }
 
 }

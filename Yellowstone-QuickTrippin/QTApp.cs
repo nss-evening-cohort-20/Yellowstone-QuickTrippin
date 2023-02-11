@@ -13,6 +13,7 @@ public class QTApp
     private StoreRepository _storeRepo = new StoreRepository();
     public void Run()
     {
+        var District = new DistrictRepository();
         var Choice = 0;
         
         Console.WriteLine("QuickTrip Management Systems");
@@ -27,6 +28,7 @@ public class QTApp
                 EnterDistrictSale();
                 break;
             case (int)MenuOption.GenerateDistricReport:
+                District.GetDistrictReport();
                 break;
             case (int)MenuOption.AddNewEmployee:
                 AddNewEmployee();

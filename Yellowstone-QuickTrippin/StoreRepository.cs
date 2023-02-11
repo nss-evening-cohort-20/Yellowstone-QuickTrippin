@@ -11,7 +11,7 @@ public class StoreRepository
 
     static List<Store> _stores = new List<Store>()
     {
-        new Store(518, 10376.48, 56432.13, 86461.53, 48635.44)
+        new Store(518, 10376.48, 56432.13, 86461.53, 48635.44, 1)
     };
 
     public List<Store> GetStores()
