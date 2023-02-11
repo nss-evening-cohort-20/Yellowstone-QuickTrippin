@@ -5,7 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
+using Yellowstone_QuickTrippin.Repositories;
+
 
 namespace Yellowstone_QuickTrippin;
 
@@ -16,6 +17,7 @@ public class QTApp
 
     private bool working;
 public void Run()
+
     {
         working = true;
 
@@ -125,22 +127,21 @@ public void Run()
                 case "1":
                     role = JobType.DistrictManager.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
                     break;
                 case "2":
                     role = JobType.StoreManager.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
+                    
                     break;
                 case "3":
                     role = JobType.AssistantManager.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
+                    
                     break;
                 case "4":
                     role = JobType.Associate.ToString();
                     Console.WriteLine(role);
-                    startLoop = false;
+                    
                     break;
                 default:
                     Console.WriteLine("That is not a valid answer!");
@@ -217,7 +218,25 @@ public void Run()
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
-        Console.Write("What is the district number?");
+    public void GetDistrictReport()
+    {
+
+        foreach (var store in _storeRepo.GetStores())
+        {
+            foreach (var district in _districtRepository.GetDistricts())
+            {
+                if (store.DistrictNumber == district.DistrictNumber)
+                {
+                    Console.WriteLine($"{district.DistrictName}: {store.GasYearly}");
+                    district.StoreList.Add(store);
+                }
+            }
+        }
+    }
+
+    private string OptionsText()
+    {
+        StringBuilder builder = new StringBuilder();
 
         Store newStore = new Store(storeNumber);
 
@@ -228,5 +247,6 @@ public void Run()
         Console.ReadKey();
 
     }
+
 
 }
