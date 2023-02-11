@@ -37,6 +37,7 @@ public class QTApp
             new SelectionPrompt<string>()
                 .Title("QT Actions - use up/down arrows + enter to make a selection")
                 .PageSize(10)
+                .HighlightStyle("Red")
                 .AddChoices(new[] {
                 "Enter District Sales",
                 "Generate District Report",
@@ -161,16 +162,6 @@ public class QTApp
 
             //}
 
-            //List<int> storeNums = new List<int>();
-
-            //foreach (var store in _storeRepo.GetStores())
-            //{
-            //    storeNums.Add(store.StoreNumber);
-            //}
-
-            //var str = String.Join(",", storeNums);
-            //Console.WriteLine(str);
-
             var prompt = new TextPrompt<int>("What store are they at?");
 
 
@@ -234,11 +225,13 @@ public class QTApp
             case "Create New Store":
                 AddStore();
                 break;
+            case "Create New District":
+                AddDistrict();
+                break;
             case "Go home":
                 Run();
                 break;
             default:
-                Console.WriteLine("That is not a valid answer!");
                 break;
         }
     }
@@ -262,16 +255,62 @@ public class QTApp
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
-        Store newStore = new Store(storeNumber, 1);
+        var prompt = new TextPrompt<int>("Please specify the relevant district for this store");
+
+        foreach (var district in _districtRepository.GetDistricts())
+        {
+            prompt.AddChoices(new[] { district.DistrictNumber });
+        }
+
+        var selectedDistrict = AnsiConsole.Prompt(prompt);
+
+        Store newStore = new Store(storeNumber, selectedDistrict);
 
         StoreRepository.AddStore(newStore);
         Console.Clear();
-        Console.WriteLine($"Store #{storeNumber} has been added to the list!\n");
-        Console.WriteLine("Press any key to return back to the Main Menu.");
+        Console.WriteLine($"Store #{storeNumber} in district #{selectedDistrict} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
+        Console.ReadKey();
+    }
+
+    public void AddDistrict()
+    {
+        Console.WriteLine("The existing districts are listed below.\n");
+        foreach (var district in _districtRepository.GetDistricts())
+        {
+            Console.WriteLine($"{district.DistrictNumber} - {district.DistrictName}");
+        }
+        Console.WriteLine();
+        Console.Write("Enter New District Number: ");
+        string districtInput = Console.ReadLine();
+
+        int districtNumber;
+
+        if (!int.TryParse(districtInput, out districtNumber))
+        {
+            Console.WriteLine("Please enter a number");
+            Console.Write("District Number: ");
+            districtInput = Console.ReadLine();
+        }
+        else
+        {
+            districtNumber = Convert.ToInt32(districtInput);
+        }
+
+        Console.Write("Enter New District Name: ");
+
+        string districtName = Console.ReadLine();
+        List<Store> stores = new List<Store>();
+        District newDistrict = new District(districtNumber, districtName, stores);
+        DistrictRepository.SaveNewDistrict(newDistrict);
+        Console.Clear();
+        Console.WriteLine($"{districtName} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
         Console.ReadKey();
     }
     public void GetDistrictReport()
     {
+        //display list of districts and allow user to select district to print report
 
         foreach (var store in _storeRepo.GetStores())
         {
