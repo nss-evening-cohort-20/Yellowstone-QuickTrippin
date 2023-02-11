@@ -8,6 +8,7 @@ namespace Yellowstone_QuickTrippin;
 public class QTApp
 {
     private StoreRepository _storeRepo = new StoreRepository();
+    private DistrictRepository _districtRepository= new DistrictRepository();
     public void Run()
 
     {
@@ -25,6 +26,7 @@ public class QTApp
                 EnterDistrictSale();
                 break;
             case (int)MenuOption.GenerateDistricReport:
+                GetDistrictReport();
                 break;
             case (int)MenuOption.AddNewEmployee:
                 AddNewEmployee();
@@ -130,6 +132,22 @@ public class QTApp
         else
         {
             Console.WriteLine("Store number is invalid. Please enter a valid Store Number");
+        }
+    }
+
+    public void GetDistrictReport()
+    {
+
+        foreach (var store in _storeRepo.GetStores())
+        {
+            foreach (var district in _districtRepository.GetDistricts())
+            {
+                if (store.DistrictNumber == district.DistrictNumber)
+                {
+                    Console.WriteLine($"{district.DistrictName}: {store.GasYearly}");
+                    district.StoreList.Add(store);
+                }
+            }
         }
     }
 
