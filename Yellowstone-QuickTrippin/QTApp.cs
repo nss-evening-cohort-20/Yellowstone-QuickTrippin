@@ -5,7 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Xml.Linq;
 using Yellowstone_QuickTrippin.Repositories;
+using static System.Formats.Asn1.AsnWriter;
 
 
 namespace Yellowstone_QuickTrippin;
@@ -17,7 +19,7 @@ public class QTApp
     private DistrictRepository _districtRepository = new DistrictRepository();
 
     private bool working;
-public void Run()
+    public void Run()
 
     {
         working = true;
@@ -120,63 +122,102 @@ public void Run()
         // ask what store number 
         while (startLoop)
         {
-            Console.WriteLine($"\n\x1B[4m What is {name}'s job title?\x1B[0m ");
-            Console.WriteLine("1. District Manager");
-            Console.WriteLine("2. Store Manager");
-            Console.WriteLine("3. Assistant Manager");
-            Console.WriteLine("4. Associate");
-            switch (Console.ReadLine())
-            {
-                case "1":
-                    role = JobType.DistrictManager.ToString();
-                    Console.WriteLine(role);
-                    break;
-                case "2":
-                    role = JobType.StoreManager.ToString();
-                    Console.WriteLine(role);
-                    
-                    break;
-                case "3":
-                    role = JobType.AssistantManager.ToString();
-                    Console.WriteLine(role);
-                    
-                    break;
-                case "4":
-                    role = JobType.Associate.ToString();
-                    Console.WriteLine(role);
-                    
-                    break;
-                default:
-                    Console.WriteLine("That is not a valid answer!");
-                    break;
+            var selection = AnsiConsole.Prompt(
+           new SelectionPrompt<string>()
+               .Title($"What is {name}'s job title?")
+               .PageSize(10)
+               .AddChoices(new[] {
+                "District Manager",
+                "Store Manager",
+                "Assistant Manager",
+                "Associate",
+                }));
 
-            }
+
+            //switch (Console.ReadLine())
+            //                {
+            //    case "1":
+            //        role = JobType.DistrictManager.ToString();
+            //        Console.WriteLine(role);
+            //        break;
+            //    case "2":
+            //        role = JobType.StoreManager.ToString();
+            //        Console.WriteLine(role);
+
+            //        break;
+            //    case "3":
+            //        role = JobType.AssistantManager.ToString();
+            //        Console.WriteLine(role);
+
+            //        break;
+            //    case "4":
+            //        role = JobType.Associate.ToString();
+            //        Console.WriteLine(role);
+
+            //        break;
+            //    default:
+            //        Console.WriteLine("That is not a valid answer!");
+            //        break;
+
+            //}
 
             var prompt = new TextPrompt<int>("What store are they at?");
+
 
             foreach (var store in _storeRepo.GetStores())
             {
                 prompt.AddChoices(new[] { store.StoreNumber });
             }
 
-            var selectedStore = AnsiConsole.Prompt(prompt);
-            Console.WriteLine(selectedStore);
-            Console.ReadLine();
-
-        }
-    }
-
-    public void AddStoreOrDistrict()
-    {
-        var selection = AnsiConsole.Prompt(
-        new SelectionPrompt<string>()
+            Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
+            Console.WriteLine($"Avalible stores :");
+            foreach (var store in _storeRepo.GetStores()) 
+            {
+                Console.WriteLine($"#{store.StoreNumber}");
+            }
+            Console.WriteLine();
+            var NewSelection = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
             .Title("What would you like to do?")
             .PageSize(10)
             .AddChoices(new[] {
+                        "Enter Store Number",
+                        "Go home",
+        }));
+            switch (NewSelection)
+            {
+                case "Enter Store Number":
+                    var selectedStore = AnsiConsole.Prompt(prompt);
+                    Console.WriteLine($@" This has been saved successfully!
+{name} is a {selection} that works at store #{selectedStore}");
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key to return back to the Main Menu.");
+                    Console.ReadKey();
+
+                    break;
+                case "Go home":
+                    Console.Clear();
+                    Run();
+                    break;
+                default:
+                    Console.WriteLine("That is not a valid answer!");
+                    break;
+            }
+            startLoop = false;
+        }
+    }
+    public void AddStoreOrDistrict()
+        {
+            var selection = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("What would you like to do?")
+                .PageSize(10)
+                .AddChoices(new[] {
                         "Create New Store",
                         "Create New District",
                         "Go home",
-        }));
+
+            }));
 
         switch (selection)
         {
