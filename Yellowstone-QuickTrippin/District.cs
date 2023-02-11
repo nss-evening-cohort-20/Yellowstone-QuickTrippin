@@ -9,7 +9,7 @@ namespace Yellowstone_QuickTrippin;
 public class District
 {
     public int DistrictNumber { get; set; }
-    public string DistrictName { get; set;}
+    public string DistrictName { get; set; }
     public List<Store> StoreList { get; set; }
 
 
