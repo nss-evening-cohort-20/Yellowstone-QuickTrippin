@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Yellowstone_QuickTrippin;
 
-public class DistrictRepository : StoreRepository
+public class DistrictRepository
 {
     // we're using a static list here instead of a proper database
     // but the general idea still holds up once we cover databases
