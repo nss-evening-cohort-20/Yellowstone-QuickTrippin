@@ -217,6 +217,8 @@ public void Run()
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
+        Console.Write("What is the district number?");
+
         Store newStore = new Store(storeNumber);
 
         StoreRepository.AddStore(newStore);
