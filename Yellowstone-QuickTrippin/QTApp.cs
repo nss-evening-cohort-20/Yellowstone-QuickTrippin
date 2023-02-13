@@ -180,7 +180,7 @@ public class QTApp
             }
 
             Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
-            Console.WriteLine($"Avalible stores :");
+            Console.WriteLine($"Avalible stores:");
             foreach (var store in _storeRepo.GetStores()) 
             {
                 Console.WriteLine($"#{store.StoreNumber}");
