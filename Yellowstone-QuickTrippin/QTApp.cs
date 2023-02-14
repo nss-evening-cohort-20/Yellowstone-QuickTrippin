@@ -117,6 +117,7 @@ public class QTApp
         Console.WriteLine("We're adding an employee");
         Console.WriteLine("What is their name? Choose wisely and then press enter.");
         string name = Console.ReadLine();
+        Console.Clear();
         string role = "";
         bool startLoop = true;
         // ask what store number 
@@ -173,19 +174,21 @@ public class QTApp
 
             var prompt = new TextPrompt<int>("What store are they at?");
 
-
             foreach (var store in _storeRepo.GetStores())
             {
                 prompt.AddChoices(new[] { store.StoreNumber });
             }
 
-            Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
             Console.WriteLine($"Avalible stores:");
-            foreach (var store in _storeRepo.GetStores()) 
+
+            foreach (var store in _storeRepo.GetStores())
             {
                 Console.WriteLine($"#{store.StoreNumber}");
             }
             Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
+            Console.WriteLine();    
             var NewSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
             .Title("What would you like to do?")
@@ -193,14 +196,97 @@ public class QTApp
             .AddChoices(new[] {
                         "Enter Store Number",
                         "Go home",
-        }));
+        })
+            );
+
+
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            bool isInputCorrect = false;
+
             switch (NewSelection)
             {
                 case "Enter Store Number":
                     var selectedStore = AnsiConsole.Prompt(prompt);
-                    Console.WriteLine($@" This has been saved successfully!
-{name} is a {selection} that works at store #{selectedStore}");
+                    Console.WriteLine($"{name} is a {selection} that works at store #{selectedStore}. ");
                     Console.WriteLine();
+                    Console.WriteLine($@"Please confirm... 
+Name: {name} 
+Role: {selection} 
+Store number: #{selectedStore}");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("Is this correct? (y/n)");
+                    string confirmation = Console.ReadLine();
+                    Console.Clear();
+
+                    if (confirmation == "y")
+                    {
+                        isInputCorrect = true;
+                    }
+                    else if (confirmation == "n") 
+                    {
+
+                        var CorrectedInput = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                        .Title("What would you like to correct?")
+                        .PageSize(10)
+                        .AddChoices(new[] {
+                        "Name",
+                        "Role",
+                        "Store Number",
+                    })
+                        );
+
+                        switch (CorrectedInput)
+                        {
+                            case $"Name":
+                                EditName();
+                                break;
+                            case "Role":
+                                EditRole();
+                                break;
+                            case "Store Number":
+                                EditStoreNumber();
+                                break;
+
+                            default:
+                                Console.WriteLine("That is not a valid answer!");
+                                break;
+                        }
+                        name = corr 
+
+                     ;
+                    //    if (CorrectedInput == "1")
+                    //    {
+                    //        Console.WriteLine($"What would you like to correct  You want to correct {name}'s nam We're adding an employee");
+                    //        Console.WriteLine("What is their name? Choose wisely and then press enter.");
+                    //    }
+                            
+                    //        Console.ReadKey();
+                    //    Console.Clear();
+                    //    Run();
+
+                    //}
+                    //else
+                    //{
+                    //    Console.WriteLine("invald command");
+                    name = correctedName
+                    }
+                    Console.WriteLine($"What is {correctedName} : {name}'s yearly sales? ");
+                    Console.WriteLine("*Please exclude the '$' sign.");
+                    Console.WriteLine();
+                    var SalesInput = Console.ReadLine();
+                    if (decimal.TryParse(SalesInput, out decimal SalesNum))
+                    {
+                        Console.WriteLine("This has been recorded!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("That is not a valid sale.");
+                    }
                     Console.WriteLine("Press any key to return back to the Main Menu.");
                     Console.ReadKey();
 
@@ -215,19 +301,20 @@ public class QTApp
             }
             startLoop = false;
         }
+
     }
     public void AddStoreOrDistrict()
-        {
-            var selection = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("What would you like to do?")
-                .PageSize(10)
-                .AddChoices(new[] {
+    {
+        var selection = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+            .Title("What would you like to do?")
+            .PageSize(10)
+            .AddChoices(new[] {
                         "Create New Store",
                         "Create New District",
                         "Go home",
 
-            }));
+        }));
 
         switch (selection)
         {
@@ -242,7 +329,24 @@ public class QTApp
                 break;
         }
     }
+         public void EditName()
+    {
+        Console.WriteLine("What is the corrected Name?");
+        string correctedName = Console.ReadLine();
+       
+    }
+     public void EditRole()
+    {
+        Console.WriteLine("What is the corrected Role?");
+        string CorrectedRole = Console.ReadLine();
 
+    }
+    public void EditStoreNumber()
+    {
+        Console.WriteLine("What is the corrected Store Number?");
+        string CorrectedStoreNumber = Console.ReadLine();
+
+    }
     public void AddStore()
     {
         Console.Write("Enter New Store Number: ");
