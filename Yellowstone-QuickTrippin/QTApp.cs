@@ -18,6 +18,7 @@ public class QTApp
 
     private StoreRepository _storeRepo = new StoreRepository();
     private DistrictRepository _districtRepository = new DistrictRepository();
+    private SalesRepository _salesRepository = new SalesRepository();
 
     private bool working;
     public void Run()
@@ -38,6 +39,7 @@ public class QTApp
             new SelectionPrompt<string>()
                 .Title("QT Actions - use up/down arrows + enter to make a selection")
                 .PageSize(10)
+                .HighlightStyle("Red")
                 .AddChoices(new[] {
                 "Enter District Sales",
                 "Generate District Report",
@@ -75,6 +77,10 @@ public class QTApp
             }
         }
 
+        AnsiConsole.Write(
+            new FigletText("Goodbye!")
+            .Centered()
+            .Color(Color.Red));
     }
 
     public void EnterDistrictSale()
@@ -162,16 +168,6 @@ public class QTApp
             //        break;
 
             //}
-
-            //List<int> storeNums = new List<int>();
-
-            //foreach (var store in _storeRepo.GetStores())
-            //{
-            //    storeNums.Add(store.StoreNumber);
-            //}
-
-            //var str = String.Join(",", storeNums);
-            //Console.WriteLine(str);
 
             var prompt = new TextPrompt<int>("What store are they at?");
 
@@ -321,11 +317,13 @@ Store number: #{selectedStore}");
             case "Create New Store":
                 AddStore();
                 break;
+            case "Create New District":
+                AddDistrict();
+                break;
             case "Go home":
                 Run();
                 break;
             default:
-                Console.WriteLine("That is not a valid answer!");
                 break;
         }
     }
@@ -367,29 +365,104 @@ Store number: #{selectedStore}");
             storeNumber = Convert.ToInt32(storeNumberInput);
         }
 
-        Store newStore = new Store(storeNumber, 1);
+        var prompt = new TextPrompt<int>("Please specify the relevant district for this store");
+
+        foreach (var district in _districtRepository.GetDistricts())
+        {
+            prompt.AddChoices(new[] { district.DistrictNumber });
+        }
+
+        var selectedDistrict = AnsiConsole.Prompt(prompt);
+
+        Store newStore = new Store(storeNumber, selectedDistrict);
 
         StoreRepository.AddStore(newStore);
         Console.Clear();
-        Console.WriteLine($"Store #{storeNumber} has been added to the list!\n");
-        Console.WriteLine("Press any key to return back to the Main Menu.");
+        Console.WriteLine($"Store #{storeNumber} in district #{selectedDistrict} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
+        Console.ReadKey();
+    }
+
+    public void AddDistrict()
+    {
+        Console.WriteLine("The existing districts are listed below.\n");
+        foreach (var district in _districtRepository.GetDistricts())
+        {
+            Console.WriteLine($"{district.DistrictNumber} - {district.DistrictName}");
+        }
+        Console.WriteLine();
+        Console.Write("Enter New District Number: ");
+        string districtInput = Console.ReadLine();
+
+        int districtNumber;
+
+        if (!int.TryParse(districtInput, out districtNumber))
+        {
+            Console.WriteLine("Please enter a number");
+            Console.Write("District Number: ");
+            districtInput = Console.ReadLine();
+        }
+        else
+        {
+            districtNumber = Convert.ToInt32(districtInput);
+        }
+
+        Console.Write("Enter New District Name: ");
+
+        string districtName = Console.ReadLine();
+        List<Store> stores = new List<Store>();
+        District newDistrict = new District(districtNumber, districtName, stores);
+        DistrictRepository.SaveNewDistrict(newDistrict);
+        Console.Clear();
+        Console.WriteLine($"{districtName} has been added to the list!\n");
+        Console.WriteLine("Press any key to return home");
         Console.ReadKey();
     }
     public void GetDistrictReport()
     {
+        //display list of districts and allow user to select district to print report
 
-        foreach (var store in _storeRepo.GetStores())
+        List<District> districts = _districtRepository.GetDistricts();
+        List<Sales> salesNumbers = _salesRepository.GetSales();
+        
+
+        Console.WriteLine("Please enter an existing district you would like to see the sales of:");
+        int districtInput = Convert.ToInt32(Console.ReadLine());
+        bool validDistrict = (districts.Where(d => d.DistrictNumber == districtInput)).ToList().Count > 0;
+
+        while (!validDistrict)
         {
-            foreach (var district in _districtRepository.GetDistricts())
+            Console.WriteLine("This is not a valid District, please enter a valid district number.");
+            districtInput = Convert.ToInt32(Console.ReadLine());
+            validDistrict = (districts.Where(d => d.DistrictNumber == districtInput)).ToList().Count > 0;
+        }
+
+        if (validDistrict)
+        {
+            Console.WriteLine("This is a valid District, generating report...");
+
+            foreach (var store in _storeRepo.GetStores())
             {
-                if (store.DistrictNumber == district.DistrictNumber)
+                foreach (var sale in salesNumbers)
                 {
-                    Console.WriteLine($"{district.DistrictName}: {store.StoreNumber}");
-                    district.StoreList.Add(store);
+                    if (store.DistrictNumber == districtInput && store.StoreNumber == sale.StoreNumber)
+                    {
+                        Console.WriteLine(@$"
+
+========================
+Store #{sale.StoreNumber} 
+Gas Current Quarter: ${sale.GasCurrentQuarter}
+Gas Yearly: ${sale.GasYearly}
+Retail Current Quarter: ${sale.RetailCurrentQuarter}
+Retail Yearly: ${sale.RetailYearly}
+========================
+
+
+");
+                    }
                 }
             }
         }
-
         Console.ReadLine();
     }
 
