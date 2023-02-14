@@ -1,5 +1,6 @@
 ﻿using Spectre.Console;
 using System;
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -242,7 +243,7 @@ Store number: #{selectedStore}");
 
                         switch (CorrectedInput)
                         {
-                            case $"Name":
+                            case "Name":
                                 EditName();
                                 break;
                             case "Role":
@@ -256,8 +257,7 @@ Store number: #{selectedStore}");
                                 Console.WriteLine("That is not a valid answer!");
                                 break;
                         }
-                        name = corr 
-
+                        
                      ;
                     //    if (CorrectedInput == "1")
                     //    {
@@ -273,13 +273,13 @@ Store number: #{selectedStore}");
                     //else
                     //{
                     //    Console.WriteLine("invald command");
-                    name = correctedName
+                 
                     }
-                    Console.WriteLine($"What is {correctedName} : {name}'s yearly sales? ");
+                    Console.WriteLine($"What is {name}'s yearly sales? ");
                     Console.WriteLine("*Please exclude the '$' sign.");
                     Console.WriteLine();
-                    var SalesInput = Console.ReadLine();
-                    if (decimal.TryParse(SalesInput, out decimal SalesNum))
+                    var YearlySalesInput = Console.ReadLine();
+                    if (decimal.TryParse(YearlySalesInput, out decimal SalesNum))
                     {
                         Console.WriteLine("This has been recorded!");
                     }
@@ -332,14 +332,15 @@ Store number: #{selectedStore}");
          public void EditName()
     {
         Console.WriteLine("What is the corrected Name?");
-        string correctedName = Console.ReadLine();
+        string CorrectedName = Console.ReadLine();
+     
        
     }
      public void EditRole()
     {
         Console.WriteLine("What is the corrected Role?");
         string CorrectedRole = Console.ReadLine();
-
+      
     }
     public void EditStoreNumber()
     {
