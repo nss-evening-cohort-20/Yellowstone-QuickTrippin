@@ -1,5 +1,6 @@
 ﻿using Spectre.Console;
 using System;
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -18,6 +19,7 @@ public class QTApp
     private StoreRepository _storeRepo = new StoreRepository();
     private DistrictRepository _districtRepository = new DistrictRepository();
     private SalesRepository _salesRepository = new SalesRepository();
+    private EmployeeRepository _employeeRepository = new EmployeeRepository();
 
     private bool working;
     public void Run()
@@ -43,6 +45,7 @@ public class QTApp
                 "Enter District Sales",
                 "Generate District Report",
                 "Add New Employee",
+                "View Exsisting Employees",
                 "Add Store/District",
                 "Exit"
             }));
@@ -62,6 +65,11 @@ public class QTApp
                 case "Add New Employee":
                     Console.Clear();
                     AddNewEmployee();
+                    Console.Clear();
+                    break;
+                case "View Exsisting Employees":
+                    Console.Clear();
+                    ViewExsistingEmployees();
                     Console.Clear();
                     break;
                 case "Add Store/District":
@@ -120,9 +128,14 @@ public class QTApp
 
     public void AddNewEmployee()
     {
+
+        EmployeeRepository EmployeeRepo = new EmployeeRepository();
+
+
         Console.WriteLine("We're adding an employee");
         Console.WriteLine("What is their name? Choose wisely and then press enter.");
         string name = Console.ReadLine();
+        Console.Clear();
         string role = "";
         bool startLoop = true;
         // ask what store number 
@@ -140,47 +153,23 @@ public class QTApp
                 }));
 
 
-            //switch (Console.ReadLine())
-            //                {
-            //    case "1":
-            //        role = JobType.DistrictManager.ToString();
-            //        Console.WriteLine(role);
-            //        break;
-            //    case "2":
-            //        role = JobType.StoreManager.ToString();
-            //        Console.WriteLine(role);
-
-            //        break;
-            //    case "3":
-            //        role = JobType.AssistantManager.ToString();
-            //        Console.WriteLine(role);
-
-            //        break;
-            //    case "4":
-            //        role = JobType.Associate.ToString();
-            //        Console.WriteLine(role);
-
-            //        break;
-            //    default:
-            //        Console.WriteLine("That is not a valid answer!");
-            //        break;
-
-            //}
 
             var prompt = new TextPrompt<int>("What store are they at?");
-
 
             foreach (var store in _storeRepo.GetStores())
             {
                 prompt.AddChoices(new[] { store.StoreNumber });
             }
 
-            Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
-            Console.WriteLine($"Avalible stores :");
-            foreach (var store in _storeRepo.GetStores()) 
+            Console.WriteLine($"Avalible stores:");
+
+            foreach (var store in _storeRepo.GetStores())
             {
                 Console.WriteLine($"#{store.StoreNumber}");
             }
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
             Console.WriteLine();
             var NewSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
@@ -189,16 +178,94 @@ public class QTApp
             .AddChoices(new[] {
                         "Enter Store Number",
                         "Go home",
-        }));
+        })
+            );
+
+
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            bool isInputCorrect = false;
+
             switch (NewSelection)
             {
                 case "Enter Store Number":
                     var selectedStore = AnsiConsole.Prompt(prompt);
-                    Console.WriteLine($@" This has been saved successfully!
-{name} is a {selection} that works at store #{selectedStore}");
+                    Console.WriteLine($"{name} is a {selection} that works at store #{selectedStore}. ");
                     Console.WriteLine();
+                    Console.WriteLine($@"Please confirm... 
+Name: {name} 
+Role: {selection} 
+Store number: #{selectedStore}");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine("Is this correct? (y/n)");
+                    string confirmation = Console.ReadLine();
+                    Console.Clear();
+
+                    if (confirmation == "y")
+                    {
+                        isInputCorrect = true;
+                    }
+                    else if (confirmation == "n")
+                    {
+
+                        var CorrectedInput = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                        .Title("What would you like to correct?")
+                        .PageSize(10)
+                        .AddChoices(new[] {
+                        "Name",
+                        "Role",
+                        "Store Number",
+                    })
+                        );
+
+                        switch (CorrectedInput)
+                        {
+                            case "Name":
+                                Console.WriteLine("What is the corrected Name?");
+                                name = Console.ReadLine();
+
+                                break;
+                            case "Role":
+                                EditRole();
+                                break;
+                            case "Store Number":
+                                EditStoreNumber();
+                                break;
+
+                            default:
+                                Console.WriteLine("That is not a valid answer!");
+                                break;
+                        }
+
+                     ;
+
+                    }
+                    Console.WriteLine($"What is {name}'s yearly sales? ");
+                    Console.WriteLine("*Please exclude the '$' sign.");
+                    Console.WriteLine();
+                    var YearlySalesInput = Console.ReadLine();
+                    if (decimal.TryParse(YearlySalesInput, out decimal SalesNum))
+                    {
+                        Console.WriteLine("This has been recorded!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("That is not a valid sale.");
+                    }
                     Console.WriteLine("Press any key to return back to the Main Menu.");
                     Console.ReadKey();
+
+                    Employee NewEmployee = new Employee(name, selection, selectedStore,  SalesNum, role);
+                    EmployeeRepo.AddEmployee(NewEmployee);
+
+
+
+                    //Sales NewSale = new Sales(StoreNumber, UserGasYearly, UserGasCurrentQuarter, UserRetailYearly, UserRetailCurrentQuarter);
+                    //SalesRepo.AddSales(NewSale);
 
                     break;
                 case "Go home":
@@ -211,19 +278,54 @@ public class QTApp
             }
             startLoop = false;
         }
+
+
+    }
+
+    public void ViewExsistingEmployees()
+    {
+        List<Employee> employees = _employeeRepository.GetEmployees();
+        Console.WriteLine("Exsisting Employees:");
+        foreach (var employee in employees)
+        {
+            Console.WriteLine($@"
+
+==================================
+Name:{employee.Name}
+Title: {employee.Role}
+Store Number :{employee.StoreNumber}
+Yearly Sales Report:  ${employee.Sales} 
+==================================");
+        }
+        var selection = AnsiConsole.Prompt(
+         new SelectionPrompt<string>()
+             .Title("What would you like to do?")
+             .PageSize(10)
+             .AddChoices(new[] {
+                       "Go home",
+
+         }));
+        //Console.WriteLine("Do you wish to edit data?");
+        //var editData = Console.ReadLine();
+        //if (editData == "y") 
+        //{
+
+        //}
+
+        //Console.ReadLine();
     }
     public void AddStoreOrDistrict()
-        {
-            var selection = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("What would you like to do?")
-                .PageSize(10)
-                .AddChoices(new[] {
+    {
+        var selection = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+            .Title("What would you like to do?")
+            .PageSize(10)
+            .AddChoices(new[] {
                         "Create New Store",
                         "Create New District",
                         "Go home",
 
-            }));
+        }));
 
         switch (selection)
         {
@@ -240,7 +342,23 @@ public class QTApp
                 break;
         }
     }
+    public void EditName()
+    {
+     
 
+    }
+    public void EditRole()
+    {
+        Console.WriteLine("What is the corrected Role?");
+        string CorrectedRole = Console.ReadLine();
+
+    }
+    public void EditStoreNumber()
+    {
+        Console.WriteLine("What is the corrected Store Number?");
+        string CorrectedStoreNumber = Console.ReadLine();
+
+    }
     public void AddStore()
     {
         Console.Write("Enter New Store Number: ");
@@ -319,7 +437,7 @@ public class QTApp
 
         List<District> districts = _districtRepository.GetDistricts();
         List<Sales> salesNumbers = _salesRepository.GetSales();
-        
+
 
         Console.WriteLine("Please enter an existing district you would like to see the sales of:");
         int districtInput = Convert.ToInt32(Console.ReadLine());
