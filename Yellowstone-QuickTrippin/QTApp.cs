@@ -19,6 +19,7 @@ public class QTApp
     private StoreRepository _storeRepo = new StoreRepository();
     private DistrictRepository _districtRepository = new DistrictRepository();
     private SalesRepository _salesRepository = new SalesRepository();
+    private EmployeeRepository _employeeRepository = new EmployeeRepository();
 
     private bool working;
     public void Run()
@@ -44,6 +45,7 @@ public class QTApp
                 "Enter District Sales",
                 "Generate District Report",
                 "Add New Employee",
+                "View Exsisting Employees",
                 "Add Store/District",
                 "Exit"
             }));
@@ -63,6 +65,11 @@ public class QTApp
                 case "Add New Employee":
                     Console.Clear();
                     AddNewEmployee();
+                    Console.Clear();
+                    break;
+                case "View Exsisting Employees":
+                    Console.Clear();
+                    ViewExsistingEmployees();
                     Console.Clear();
                     break;
                 case "Add Store/District":
@@ -121,6 +128,10 @@ public class QTApp
 
     public void AddNewEmployee()
     {
+
+        EmployeeRepository EmployeeRepo = new EmployeeRepository();
+
+
         Console.WriteLine("We're adding an employee");
         Console.WriteLine("What is their name? Choose wisely and then press enter.");
         string name = Console.ReadLine();
@@ -142,32 +153,6 @@ public class QTApp
                 }));
 
 
-            //switch (Console.ReadLine())
-            //                {
-            //    case "1":
-            //        role = JobType.DistrictManager.ToString();
-            //        Console.WriteLine(role);
-            //        break;
-            //    case "2":
-            //        role = JobType.StoreManager.ToString();
-            //        Console.WriteLine(role);
-
-            //        break;
-            //    case "3":
-            //        role = JobType.AssistantManager.ToString();
-            //        Console.WriteLine(role);
-
-            //        break;
-            //    case "4":
-            //        role = JobType.Associate.ToString();
-            //        Console.WriteLine(role);
-
-            //        break;
-            //    default:
-            //        Console.WriteLine("That is not a valid answer!");
-            //        break;
-
-            //}
 
             var prompt = new TextPrompt<int>("What store are they at?");
 
@@ -185,7 +170,7 @@ public class QTApp
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("*Note: If the employee's store is not listed please go back to the Main Menu to first add the store.");
-            Console.WriteLine();    
+            Console.WriteLine();
             var NewSelection = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
             .Title("What would you like to do?")
@@ -223,7 +208,7 @@ Store number: #{selectedStore}");
                     {
                         isInputCorrect = true;
                     }
-                    else if (confirmation == "n") 
+                    else if (confirmation == "n")
                     {
 
                         var CorrectedInput = AnsiConsole.Prompt(
@@ -240,7 +225,9 @@ Store number: #{selectedStore}");
                         switch (CorrectedInput)
                         {
                             case "Name":
-                                EditName();
+                                Console.WriteLine("What is the corrected Name?");
+                                name = Console.ReadLine();
+
                                 break;
                             case "Role":
                                 EditRole();
@@ -253,23 +240,9 @@ Store number: #{selectedStore}");
                                 Console.WriteLine("That is not a valid answer!");
                                 break;
                         }
-                        
-                     ;
-                    //    if (CorrectedInput == "1")
-                    //    {
-                    //        Console.WriteLine($"What would you like to correct  You want to correct {name}'s nam We're adding an employee");
-                    //        Console.WriteLine("What is their name? Choose wisely and then press enter.");
-                    //    }
-                            
-                    //        Console.ReadKey();
-                    //    Console.Clear();
-                    //    Run();
 
-                    //}
-                    //else
-                    //{
-                    //    Console.WriteLine("invald command");
-                 
+                     ;
+
                     }
                     Console.WriteLine($"What is {name}'s yearly sales? ");
                     Console.WriteLine("*Please exclude the '$' sign.");
@@ -286,6 +259,14 @@ Store number: #{selectedStore}");
                     Console.WriteLine("Press any key to return back to the Main Menu.");
                     Console.ReadKey();
 
+                    Employee NewEmployee = new Employee(name, selection, selectedStore,  SalesNum, role);
+                    EmployeeRepo.AddEmployee(NewEmployee);
+
+
+
+                    //Sales NewSale = new Sales(StoreNumber, UserGasYearly, UserGasCurrentQuarter, UserRetailYearly, UserRetailCurrentQuarter);
+                    //SalesRepo.AddSales(NewSale);
+
                     break;
                 case "Go home":
                     Console.Clear();
@@ -298,6 +279,40 @@ Store number: #{selectedStore}");
             startLoop = false;
         }
 
+
+    }
+
+    public void ViewExsistingEmployees()
+    {
+        List<Employee> employees = _employeeRepository.GetEmployees();
+        Console.WriteLine("Exsisting Employees:");
+        foreach (var employee in employees)
+        {
+            Console.WriteLine($@"
+
+==================================
+Name:{employee.Name}
+Title: {employee.Role}
+Store Number :{employee.StoreNumber}
+Yearly Sales Report:  ${employee.Sales} 
+==================================");
+        }
+        var selection = AnsiConsole.Prompt(
+         new SelectionPrompt<string>()
+             .Title("What would you like to do?")
+             .PageSize(10)
+             .AddChoices(new[] {
+                       "Go home",
+
+         }));
+        //Console.WriteLine("Do you wish to edit data?");
+        //var editData = Console.ReadLine();
+        //if (editData == "y") 
+        //{
+
+        //}
+
+        //Console.ReadLine();
     }
     public void AddStoreOrDistrict()
     {
@@ -327,18 +342,16 @@ Store number: #{selectedStore}");
                 break;
         }
     }
-         public void EditName()
+    public void EditName()
     {
-        Console.WriteLine("What is the corrected Name?");
-        string CorrectedName = Console.ReadLine();
      
-       
+
     }
-     public void EditRole()
+    public void EditRole()
     {
         Console.WriteLine("What is the corrected Role?");
         string CorrectedRole = Console.ReadLine();
-      
+
     }
     public void EditStoreNumber()
     {
@@ -424,7 +437,7 @@ Store number: #{selectedStore}");
 
         List<District> districts = _districtRepository.GetDistricts();
         List<Sales> salesNumbers = _salesRepository.GetSales();
-        
+
 
         Console.WriteLine("Please enter an existing district you would like to see the sales of:");
         int districtInput = Convert.ToInt32(Console.ReadLine());
